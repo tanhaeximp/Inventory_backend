@@ -19,11 +19,18 @@ import categoryRoutes from "./routes/categories.js";
 import pnlRoutes from "./routes/pnl.js";
 import balanceRoutes from "./routes/balance.js";
 
-
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// ✅ Allow frontend domain explicitly
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://inventory-frontend-two-xi.vercel.app"],
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 // Routes
@@ -43,8 +50,6 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/reports", pnlRoutes);
 app.use("/api/reports", balanceRoutes);
 
-
-
 // Test route
 app.get("/", (req, res) => {
   res.send("Inventory backend is running");
@@ -52,7 +57,7 @@ app.get("/", (req, res) => {
 
 // MongoDB connection
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
